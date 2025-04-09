@@ -164,6 +164,10 @@ vim.opt.scrolloff = 10
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Half-page down and center' })
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Half-page up and center' })
 
+-- Remapping search movements
+vim.keymap.set('n', 'n', 'nzz', { desc = 'Next search result and center screen' })
+vim.keymap.set('n', 'N', 'Nzz', { desc = 'Previous search result and center screen' })
+
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
