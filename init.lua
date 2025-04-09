@@ -167,6 +167,8 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Half-page up and center' })
 -- Remapping search movements
 vim.keymap.set('n', 'n', 'nzz', { desc = 'Next search result and center screen' })
 vim.keymap.set('n', 'N', 'Nzz', { desc = 'Previous search result and center screen' })
+vim.keymap.set('n', '*', '*zz', { desc = 'Search forward for word under cursor and center screen' })
+vim.keymap.set('n', '#', '#zz', { desc = 'Search backward for word under cursor and center screen' })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
