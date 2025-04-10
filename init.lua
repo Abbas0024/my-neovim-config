@@ -185,6 +185,11 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
+-- TERMINAL OPENING
+vim.keymap.set('n', '<leader>th', ':split | terminal<CR>', { desc = '[T]erminal [H]orizontal Split' })
+vim.keymap.set('n', '<leader>tv', ':vsplit | terminal<CR>', { desc = '[T]erminal [V]ertical Split' })
+vim.keymap.set('n', '<leader>tt', ':tabnew | terminal<CR>', { desc = '[T]erminal in new [T]ab' })
+
 -- TIP: Disable arrow keys in normal mode
 vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
 vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
@@ -199,6 +204,20 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<leader>wd', '<C-w>c', { desc = '[W]indow [D]elete (close)' })
+vim.keymap.set('n', '<leader>wo', '<C-w>o', { desc = '[W]indow [O]nly (close others)' })
+
+-- RESIZE WINDOWS WITH SHIFT + H/J/K/L
+vim.keymap.set('n', 'L', ':vertical resize -5<CR>', { desc = 'Resize window ←' })
+vim.keymap.set('n', 'H', ':vertical resize +5<CR>', { desc = 'Resize window →' })
+vim.keymap.set('n', 'J', ':resize +3<CR>', { desc = 'Resize window ↓' })
+vim.keymap.set('n', 'K', ':resize -3<CR>', { desc = 'Resize window ↑' })
+
+-- TAB MANAGEMENT
+vim.keymap.set('n', '<Tab>n', ':tabnext<CR>', { desc = 'Tab Next' })
+vim.keymap.set('n', '<Tab>p', ':tabprevious<CR>', { desc = 'Tab Previous' })
+vim.keymap.set('n', '<Tab>c', ':tabclose<CR>', { desc = 'Tab Close' })
+vim.keymap.set('n', '<Tab>t', ':tabnew<CR>', { desc = 'Tab New' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -328,8 +347,8 @@ require('lazy').setup({
         { '<leader>d', group = '[D]ocument' },
         { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
+        { '<leader>t', group = '[T]oggle/[T]erminal' },
+        { '<leader>w', group = '[W]indow' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
@@ -392,11 +411,19 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          mappings = {
+            i = {
+              ['<C-v>'] = require('telescope.actions').select_vertical,
+              ['<C-h>'] = require('telescope.actions').select_horizontal,
+            },
+            n = {
+              ['<C-v>'] = require('telescope.actions').select_vertical,
+              ['<C-h>'] = require('telescope.actions').select_horizontal,
+            },
+          },
+        },
+
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -413,7 +440,7 @@ require('lazy').setup({
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
@@ -971,7 +998,7 @@ require('lazy').setup({
   require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
-  require 'kickstart.plugins.neo-tree',
+  -- require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   require 'kickstart.plugins.catppuccin',
   require 'kickstart.plugins.vimbegood',
