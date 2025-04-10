@@ -1,6 +1,6 @@
 return {
   'windwp/nvim-ts-autotag',
-  event = "InsertEnter",
+  event = 'InsertEnter',
   config = function()
     require('nvim-ts-autotag').setup {
       opts = {
@@ -8,12 +8,6 @@ return {
         enable_rename = true,
         enable_close_on_slash = false,
       },
-      per_filetype = {
-        ['html'] = {
-          enable_close = false,
-        },
-      },
     }
-  end
+  end,
 }
-
