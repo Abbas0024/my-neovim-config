@@ -497,7 +497,12 @@ require('lazy').setup({
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
-      { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
+      {
+        'williamboman/mason.nvim',
+        config = function()
+          require('mason').setup()
+        end,
+      }, -- NOTE: Must be loaded before dependants
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
@@ -690,7 +695,6 @@ require('lazy').setup({
       --    :Mason
       --
       --  You can press `g?` for help in this menu.
-      require('mason').setup()
 
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
