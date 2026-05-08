@@ -694,6 +694,7 @@ require('lazy').setup({
         cssls = {},
         emmet_ls = {},
         clangd = {},
+        jdtls = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -718,6 +719,8 @@ require('lazy').setup({
         'json-lsp',
         'emmet-ls',
         'clangd',
+        'java-debug-adapter',
+        'java-test',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -987,6 +990,7 @@ require('lazy').setup({
         'css',
         'json',
         'rust',
+        'java',
       },
       auto_install = true,
       highlight = {
