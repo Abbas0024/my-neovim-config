@@ -370,7 +370,7 @@ require('lazy').setup({
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
-    branch = '0.1.x',
+    -- branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -684,17 +684,6 @@ require('lazy').setup({
             },
           },
         },
-
-        ts_ls = {},
-        tailwindcss = {},
-        eslint = {},
-        rust_analyzer = {},
-        jsonls = {},
-        html = {},
-        cssls = {},
-        emmet_ls = {},
-        clangd = {},
-        jdtls = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -709,18 +698,6 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
-        'prettier',
-        'eslint_d',
-        'rust_analyzer',
-        'ts_ls',
-        'tailwindcss-language-server',
-        'html-lsp',
-        'css-lsp',
-        'json-lsp',
-        'emmet-ls',
-        'clangd',
-        'java-debug-adapter',
-        'java-test',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -778,15 +755,6 @@ require('lazy').setup({
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
-        javascript = { 'prettierd', 'prettier' },
-        typescript = { 'prettierd', 'prettier' },
-        javascriptreact = { 'prettierd', 'prettier' },
-        typescriptreact = { 'prettierd', 'prettier' },
-        html = { 'prettierd', 'prettier' },
-        css = { 'prettierd', 'prettier' },
-        json = { 'prettierd', 'prettier' },
-        rust = { 'rustfmt' },
-        c = { 'clang-format' },
       },
     },
   },
@@ -968,7 +936,7 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    main = 'nvim-treesitter', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
       -- Autoinstall languages that are not installed
@@ -984,13 +952,6 @@ require('lazy').setup({
         'query',
         'vim',
         'vimdoc',
-        'javascript',
-        'typescript',
-        'tsx',
-        'css',
-        'json',
-        'rust',
-        'java',
       },
       auto_install = true,
       highlight = {
