@@ -263,7 +263,7 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
-  -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
+  -- NOTE: Plugins can be added with a link (or for a github repo:ok so using this fi 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
   -- NOTE: Plugins can also be added by using a table,
@@ -395,7 +395,6 @@ require('lazy').setup({
       -- Telescope is a fuzzy finder that comes with a lot of different things that
       -- it can fuzzy find! It's more than just a "file finder", it can search
       -- many different aspects of Neovim, your workspace, LSP, and more!
-      --
       -- The easiest way to use Telescope, is to start by doing something like:
       --  :Telescope help_tags
       --
@@ -503,14 +502,14 @@ require('lazy').setup({
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
-      {
-        'williamboman/mason.nvim',
-        config = function()
-          require('mason').setup()
-        end,
-      }, -- NOTE: Must be loaded before dependants
-      'williamboman/mason-lspconfig.nvim',
-      'WhoIsSethDaniel/mason-tool-installer.nvim',
+      --{
+      --  'williamboman/mason.nvim',
+      --  config = function()
+      --    require('mason').setup()
+      --  end,
+      -- }, -- NOTE: Must be loaded before dependants
+      -- 'williamboman/mason-lspconfig.nvim',
+      -- 'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -605,7 +604,7 @@ require('lazy').setup({
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
@@ -632,7 +631,7 @@ require('lazy').setup({
           -- code, if the language server you are using supports them
           --
           -- This may be unwanted, since they displace some of your code
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
             map('<leader>th', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
@@ -669,6 +668,9 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
+        clangd = {},
+        bashls = {},
+        gopls = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -686,35 +688,51 @@ require('lazy').setup({
         },
       }
 
-      -- Ensure the servers and tools above are installed
-      --  To check the current status of installed tools and/or manually install
-      --  other tools, you can run
-      --    :Mason
-      --
-      --  You can press `g?` for help in this menu.
+      -- This is the manual loop required since Mason is removed
+      for server_name, server in pairs(servers) do
+        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
 
-      -- You can add other tools here that you want Mason to install
-      -- for you, so that they are available from within Neovim.
-      local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
-      })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+        -- Load default settings from nvim-lspconfig
+        pcall(require, 'lspconfig.configs.' .. server_name)
 
-      require('mason-lspconfig').setup {
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
-      }
+        -- Merge your custom settings into the native Neovim config
+        vim.lsp.config[server_name] = vim.tbl_deep_extend('force', vim.lsp.config[server_name] or {}, server)
+
+        -- Enable the server natively
+        vim.lsp.enable(server_name)
+      end
     end,
   },
+
+  -- Ensure the servers and tools above are installed
+  --  To check the current status of installed tools and/or manually install
+  --  other tools, you can run
+  --    :Mason
+  --
+  --  You can press `g?` for help in this menu.
+
+  -- You can add other tools here that you want Mason to install
+  -- for you, so that they are available from within Neovim.
+  --  local ensure_installed = vim.tbl_keys(servers or {})
+  --  vim.list_extend(ensure_installed, {
+  --    'stylua', -- Used to format Lua code
+  --  })
+  -- require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+  --  require('mason-lspconfig').setup {
+  --    handlers = {
+  --      function(server_name)
+  --         local server = servers[server_name] or {}
+  --        -- This handles overriding only values explicitly passed
+  --        -- by the server configuration above. Useful when disabling
+  --        -- certain features of an LSP (for example, turning off formatting for ts_ls)
+  --        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+  --        require('lspconfig')[server_name].setup(server)
+  --      end,
+  --    },
+  -- }
+  -- end,
+  -- },
 
   { -- Autoformat
     'stevearc/conform.nvim',
@@ -755,6 +773,10 @@ require('lazy').setup({
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        c = { 'clang-format' },
+        cpp = { 'clang-format' },
+        bash = { 'shfmt' },
+        go = { 'gofmt' },
       },
     },
   },
@@ -942,6 +964,9 @@ require('lazy').setup({
       -- Autoinstall languages that are not installed
       ensure_installed = {
         'bash',
+        'asm',
+        'cpp',
+        'go',
         'c',
         'diff',
         'html',
